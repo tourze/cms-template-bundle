@@ -4,7 +4,6 @@ namespace Tourze\CmsTemplateBundle\Controller;
 
 use CmsBundle\Repository\EntityRepository;
 use CmsBundle\Repository\ModelRepository;
-use CmsBundle\Service\RoutingCondition;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,6 +11,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Tourze\CmsTemplateBundle\Repository\RenderTemplateRepository;
+use Tourze\CmsTemplateBundle\Service\RoutingCondition;
 use Twig\Environment;
 
 class RenderController extends AbstractController
