@@ -6,6 +6,8 @@ services:
 
   Tourze\CmsTemplateBundle\Controller\:
     resource: '../../Controller/'
+  Tourze\CmsTemplateBundle\EventSubscriber\:
+    resource: '../../EventSubscriber/'
   Tourze\CmsTemplateBundle\Repository\:
     resource: '../../Repository/'
   Tourze\CmsTemplateBundle\Service\:
