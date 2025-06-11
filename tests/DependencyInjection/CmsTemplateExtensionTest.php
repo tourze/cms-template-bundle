@@ -32,7 +32,7 @@ class CmsTemplateExtensionTest extends TestCase
         $this->expectNotToPerformAssertions();
         try {
             $this->extension->load($configs, $this->container);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             // 如果services.yaml文件不存在，这是预期的
             $this->assertStringContainsString('services.yaml', $e->getMessage());
         }
@@ -45,7 +45,7 @@ class CmsTemplateExtensionTest extends TestCase
         try {
             $this->extension->load($configs, $this->container);
             $this->assertTrue(true); // 如果没有异常，测试通过
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             // 在测试环境中，如果配置文件不存在是正常的
             $this->assertStringContainsString('services.yaml', $e->getMessage());
         }
