@@ -40,7 +40,7 @@ class RoutingCondition implements RoutingConditionInterface
 
             return $routes;
         });
-        if (!$routes) {
+        if ($routes === null) {
             return false;
         }
 

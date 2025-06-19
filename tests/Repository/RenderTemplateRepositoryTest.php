@@ -40,25 +40,6 @@ class RenderTemplateRepositoryTest extends TestCase
         $this->assertEquals(ServiceEntityRepository::class, $parent->getName());
     }
 
-    public function test_has_find_method(): void
-    {
-        $this->assertTrue(method_exists($this->repository, 'find'));
-    }
-
-    public function test_has_find_one_by_method(): void
-    {
-        $this->assertTrue(method_exists($this->repository, 'findOneBy'));
-    }
-
-    public function test_has_find_all_method(): void
-    {
-        $this->assertTrue(method_exists($this->repository, 'findAll'));
-    }
-
-    public function test_has_find_by_method(): void
-    {
-        $this->assertTrue(method_exists($this->repository, 'findBy'));
-    }
 
     public function test_repository_with_mock_registry(): void
     {

@@ -172,7 +172,7 @@ class RenderTemplateTest extends TestCase
 
     public function test_create_time_property(): void
     {
-        $now = new \DateTime();
+        $now = new \DateTimeImmutable();
         $this->template->setCreateTime($now);
 
         $this->assertEquals($now, $this->template->getCreateTime());
@@ -180,7 +180,7 @@ class RenderTemplateTest extends TestCase
 
     public function test_update_time_property(): void
     {
-        $now = new \DateTime();
+        $now = new \DateTimeImmutable();
         $this->template->setUpdateTime($now);
 
         $this->assertEquals($now, $this->template->getUpdateTime());

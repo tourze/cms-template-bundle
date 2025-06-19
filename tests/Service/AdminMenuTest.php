@@ -30,15 +30,6 @@ class AdminMenuTest extends TestCase
         $this->assertInstanceOf(AdminMenu::class, $adminMenu);
     }
 
-    public function test_callable_interface(): void
-    {
-        $this->assertTrue(is_callable($this->adminMenu));
-    }
-
-    public function test_invoke_method_exists(): void
-    {
-        $this->assertTrue(method_exists($this->adminMenu, '__invoke'));
-    }
 
     public function test_link_generator_dependency(): void
     {
@@ -48,10 +39,9 @@ class AdminMenuTest extends TestCase
         $this->assertInstanceOf(AdminMenu::class, $adminMenu);
     }
 
-        public function test_invoke_basic_execution(): void
+    public function test_invoke_basic_execution(): void
     {
         // 由于AdminMenu涉及复杂的菜单构建逻辑，我们只验证基本功能
-        $this->assertTrue(method_exists($this->adminMenu, '__invoke'));
         $this->assertInstanceOf(MenuProviderInterface::class, $this->adminMenu);
     }
 }

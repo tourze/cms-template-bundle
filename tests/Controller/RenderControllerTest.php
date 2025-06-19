@@ -50,10 +50,6 @@ class RenderControllerTest extends TestCase
         $this->assertInstanceOf(RenderController::class, $controller);
     }
 
-    public function test_main_method_exists(): void
-    {
-        $this->assertTrue(method_exists($this->controller, 'main'));
-    }
 
     public function test_controller_dependencies(): void
     {

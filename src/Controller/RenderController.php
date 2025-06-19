@@ -31,13 +31,13 @@ class RenderController extends AbstractController
         condition: "service('cms_routing_condition').check(context, request)",
         priority: -999
     )]
-    public function main(string $path, Request $request): Response
+    public function __invoke(string $path, Request $request): Response
     {
         $template = $this->templateRepository->findOneBy([
             'id' => $request->attributes->get(RoutingCondition::TEMPLATE_KEY),
             'valid' => true,
         ]);
-        if (!$template) {
+        if ($template === null) {
             throw new NotFoundHttpException('查找模板失败');
         }
 
@@ -61,7 +61,7 @@ class RenderController extends AbstractController
                 'id' => $request->attributes->get('entity_id'),
             ]);
         }
-        if ($entity && !$model) {
+        if ($entity !== null && $model === null) {
             $model = $entity->getModel();
         }
 

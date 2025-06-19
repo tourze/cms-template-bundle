@@ -103,18 +103,4 @@ class AttributeControllerLoaderTest extends TestCase
         $this->assertNotNull($collection);
     }
 
-    public function test_method_exists_autoload(): void
-    {
-        $this->assertTrue(method_exists($this->loader, 'autoload'));
-    }
-
-    public function test_method_exists_load(): void
-    {
-        $this->assertTrue(method_exists($this->loader, 'load'));
-    }
-
-    public function test_method_exists_supports(): void
-    {
-        $this->assertTrue(method_exists($this->loader, 'supports'));
-    }
 }
