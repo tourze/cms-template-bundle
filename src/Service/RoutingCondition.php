@@ -47,7 +47,11 @@ class RoutingCondition implements RoutingConditionInterface
         $matcher = new UrlMatcher($routes, $context);
 
         $path = $this->findRealPath($request);
-        $parameters = $matcher->match($path);
+        try {
+            $parameters = $matcher->match($path);
+        } catch (\Symfony\Component\Routing\Exception\ResourceNotFoundException $e) {
+            return false;
+        }
 
         if (empty($parameters)) {
             return false;

@@ -25,7 +25,7 @@ class RenderController extends AbstractController
     }
 
     #[Route(
-        '/{path}',
+        path: '/{path}',
         name: 'cms-render-main',
         requirements: ['path' => Requirement::CATCH_ALL],
         condition: "service('cms_routing_condition').check(context, request)",

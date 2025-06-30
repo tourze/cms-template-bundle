@@ -11,7 +11,7 @@ use Tourze\CmsTemplateBundle\Repository\RenderTemplateRepository;
 use Tourze\DoctrineIndexedBundle\Attribute\IndexColumn;
 use Tourze\DoctrineIpBundle\Attribute\CreateIpColumn;
 use Tourze\DoctrineIpBundle\Attribute\UpdateIpColumn;
-use Tourze\DoctrineSnowflakeBundle\Service\SnowflakeIdGenerator;
+use Tourze\DoctrineSnowflakeBundle\Traits\SnowflakeKeyAware;
 use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
 use Tourze\DoctrineTrackBundle\Attribute\TrackColumn;
 use Tourze\EnumExtra\Itemable;
@@ -20,14 +20,9 @@ use Tourze\EnumExtra\Itemable;
 #[ORM\Table(name: 'cms_render_template', options: ['comment' => '页面模板表'])]
 class RenderTemplate implements \Stringable, Itemable
 {
+    use SnowflakeKeyAware;
     use TimestampableAware;
     use \Tourze\DoctrineUserBundle\Traits\BlameableAware;
-    
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\CustomIdGenerator(SnowflakeIdGenerator::class)]
-    #[ORM\Column(type: Types::BIGINT, nullable: false, options: ['comment' => 'ID'])]
-    private ?string $id = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, unique: true, options: ['comment' => '路径'])]
     private ?string $path = null;
@@ -76,10 +71,6 @@ class RenderTemplate implements \Stringable, Itemable
         return $this->getTitle();
     }
 
-    public function getId(): ?string
-    {
-        return $this->id;
-    }
 
     public function setCreatedBy(?string $createdBy): self
     {
