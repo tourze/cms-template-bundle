@@ -12,3 +12,6 @@ services:
     resource: '../../Repository/'
   Tourze\CmsTemplateBundle\Service\:
     resource: '../../Service/'
+  
+  Tourze\CmsTemplateBundle\Service\AdminMenu:
+    public: true

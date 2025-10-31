@@ -22,7 +22,7 @@ class RenderTemplateListener
 
     public function ensurePathHasLeftSlash(RenderTemplate $object): void
     {
-        $path = trim($object->getPath());
+        $path = trim($object->getPath() ?? '');
         if (!str_starts_with($path, '/')) {
             $path = "/{$path}";
         }

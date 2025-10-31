@@ -2,46 +2,84 @@
 
 namespace Tourze\CmsTemplateBundle\Tests\Service;
 
-use PHPUnit\Framework\TestCase;
+use Knp\Menu\ItemInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Tourze\CmsTemplateBundle\Service\AdminMenu;
 use Tourze\EasyAdminMenuBundle\Service\LinkGeneratorInterface;
-use Tourze\EasyAdminMenuBundle\Service\MenuProviderInterface;
+use Tourze\PHPUnitSymfonyWebTest\AbstractEasyAdminMenuTestCase;
 
-class AdminMenuTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(AdminMenu::class)]
+#[RunTestsInSeparateProcesses]
+final class AdminMenuTest extends AbstractEasyAdminMenuTestCase
 {
-    private AdminMenu $adminMenu;
-    private LinkGeneratorInterface $linkGenerator;
-
-    protected function setUp(): void
+    protected function onSetUp(): void
     {
-        $this->linkGenerator = $this->createMock(LinkGeneratorInterface::class);
-        $this->adminMenu = new AdminMenu($this->linkGenerator);
+        // 设置 LinkGenerator 的 mock
+        $linkGenerator = $this->createMock(LinkGeneratorInterface::class);
+        $linkGenerator->method('getCurdListPage')->willReturn('/admin/render-template');
+
+        self::getContainer()->set(LinkGeneratorInterface::class, $linkGenerator);
     }
 
-    public function test_implements_menu_provider_interface(): void
+    public function testInvokeCreatesContentCenterMenu(): void
     {
-        $this->assertInstanceOf(MenuProviderInterface::class, $this->adminMenu);
+        $rootItem = $this->createMock(ItemInterface::class);
+        $contentCenterItem = $this->createMock(ItemInterface::class);
+
+        // 模拟根菜单项没有内容中心子菜单
+        $rootItem->expects($this->exactly(2))
+            ->method('getChild')
+            ->with('内容中心')
+            ->willReturnOnConsecutiveCalls(null, $contentCenterItem)
+        ;
+
+        // 模拟添加内容中心菜单
+        $rootItem->expects($this->once())
+            ->method('addChild')
+            ->with('内容中心')
+            ->willReturn($contentCenterItem)
+        ;
+
+        // 模拟内容中心菜单添加渲染模板子菜单
+        $contentCenterItem->expects($this->once())
+            ->method('addChild')
+            ->with('渲染模板')
+            ->willReturn($this->createMock(ItemInterface::class))
+        ;
+
+        $adminMenu = self::getService(AdminMenu::class);
+        $adminMenu($rootItem);
     }
 
-    public function test_constructor(): void
+    public function testInvokeWithExistingContentCenterMenu(): void
     {
-        $adminMenu = new AdminMenu($this->linkGenerator);
+        $rootItem = $this->createMock(ItemInterface::class);
+        $contentCenterItem = $this->createMock(ItemInterface::class);
 
-        $this->assertInstanceOf(AdminMenu::class, $adminMenu);
-    }
+        // 模拟根菜单项已经有内容中心子菜单
+        $rootItem->expects($this->exactly(2))
+            ->method('getChild')
+            ->with('内容中心')
+            ->willReturn($contentCenterItem)
+        ;
 
+        // 不应该再次添加内容中心菜单
+        $rootItem->expects($this->never())
+            ->method('addChild')
+        ;
 
-    public function test_link_generator_dependency(): void
-    {
-        $mockLinkGenerator = $this->createMock(LinkGeneratorInterface::class);
-        $adminMenu = new AdminMenu($mockLinkGenerator);
+        // 模拟内容中心菜单添加渲染模板子菜单
+        $contentCenterItem->expects($this->once())
+            ->method('addChild')
+            ->with('渲染模板')
+            ->willReturn($this->createMock(ItemInterface::class))
+        ;
 
-        $this->assertInstanceOf(AdminMenu::class, $adminMenu);
-    }
-
-    public function test_invoke_basic_execution(): void
-    {
-        // 由于AdminMenu涉及复杂的菜单构建逻辑，我们只验证基本功能
-        $this->assertInstanceOf(MenuProviderInterface::class, $this->adminMenu);
+        $adminMenu = self::getService(AdminMenu::class);
+        $adminMenu($rootItem);
     }
 }

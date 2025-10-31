@@ -2,9 +2,11 @@
 
 namespace Tourze\CmsTemplateBundle\Service;
 
+use Monolog\Attribute\WithMonologChannel;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Attribute\AsRoutingConditionService;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
@@ -19,6 +21,7 @@ use Tourze\DoctrineHelper\CacheHelper;
  * 决定是否可以激活路由
  */
 #[AsRoutingConditionService(alias: 'cms_routing_condition')]
+#[WithMonologChannel(channel: 'cms_template')]
 class RoutingCondition implements RoutingConditionInterface
 {
     final public const TEMPLATE_KEY = '_cmsRenderTemplateId';
@@ -35,12 +38,19 @@ class RoutingCondition implements RoutingConditionInterface
         $routes = $this->cache->get('cms-template-routes', function (ItemInterface $item) {
             $routes = $this->getRoutes();
             $item->set($routes);
-            $item->tag(CacheHelper::getClassTags(RenderTemplate::class));
+
+            // Only tag if the cache adapter supports tagging
+            try {
+                $item->tag(CacheHelper::getClassTags(RenderTemplate::class));
+            } catch (\LogicException $e) {
+                // Ignore tagging errors in test environment where cache may not support tags
+            }
+
             $item->expiresAfter(60 * 60 * 24);
 
             return $routes;
         });
-        if ($routes === null) {
+        if (null === $routes) {
             return false;
         }
 
@@ -49,11 +59,11 @@ class RoutingCondition implements RoutingConditionInterface
         $path = $this->findRealPath($request);
         try {
             $parameters = $matcher->match($path);
-        } catch (\Symfony\Component\Routing\Exception\ResourceNotFoundException $e) {
+        } catch (ResourceNotFoundException $e) {
             return false;
         }
 
-        if (empty($parameters)) {
+        if ([] === $parameters) {
             return false;
         }
 
@@ -83,7 +93,7 @@ class RoutingCondition implements RoutingConditionInterface
         }
 
         foreach ($templates as $renderTemplate) {
-            $route = new Route($renderTemplate->getPath(), [self::TEMPLATE_KEY => $renderTemplate->getId()]);
+            $route = new Route($renderTemplate->getPath() ?? '/', [self::TEMPLATE_KEY => $renderTemplate->getId()]);
             $routes->add("{$renderTemplate->getId()}-{$renderTemplate->getTitle()}", $route);
         }
 

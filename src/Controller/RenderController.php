@@ -2,8 +2,8 @@
 
 namespace Tourze\CmsTemplateBundle\Controller;
 
-use CmsBundle\Repository\EntityRepository;
-use CmsBundle\Repository\ModelRepository;
+use CmsBundle\Service\EntityService;
+use CmsBundle\Service\ModelService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,12 +14,12 @@ use Tourze\CmsTemplateBundle\Repository\RenderTemplateRepository;
 use Tourze\CmsTemplateBundle\Service\RoutingCondition;
 use Twig\Environment;
 
-class RenderController extends AbstractController
+final class RenderController extends AbstractController
 {
     public function __construct(
         private readonly Environment $twig,
-        private readonly ModelRepository $modelRepository,
-        private readonly EntityRepository $entityRepository,
+        private readonly ModelService $modelService,
+        private readonly EntityService $entityService,
         private readonly RenderTemplateRepository $templateRepository,
     ) {
     }
@@ -37,35 +37,33 @@ class RenderController extends AbstractController
             'id' => $request->attributes->get(RoutingCondition::TEMPLATE_KEY),
             'valid' => true,
         ]);
-        if ($template === null) {
+        if (null === $template) {
             throw new NotFoundHttpException('查找模板失败');
         }
 
         $model = null;
         if ($request->attributes->has('model_code')) {
-            $model = $this->modelRepository->findOneBy([
-                'code' => $request->attributes->get('model_code'),
-                'valid' => true,
-            ]);
+            $model = $this->modelService->findValidModelByCode(
+                $request->attributes->get('model_code')
+            );
         }
         if ($request->attributes->has('model_id')) {
-            $model = $this->modelRepository->findOneBy([
-                'code' => $request->attributes->get('model_id'),
-                'valid' => true,
-            ]);
+            $model = $this->modelService->findValidModelById(
+                $request->attributes->get('model_id')
+            );
         }
 
         $entity = null;
         if ($request->attributes->has('entity_id')) {
-            $entity = $this->entityRepository->findOneBy([
-                'id' => $request->attributes->get('entity_id'),
-            ]);
+            $entity = $this->entityService->findEntityById(
+                $request->attributes->get('entity_id')
+            );
         }
-        if ($entity !== null && $model === null) {
+        if (null !== $entity && null === $model) {
             $model = $entity->getModel();
         }
 
-        $twigTemplate = $this->twig->createTemplate($template->getContent());
+        $twigTemplate = $this->twig->createTemplate($template->getContent() ?? '');
         $content = $twigTemplate->render([
             ...$request->attributes->all(),
             'path' => $path,

@@ -1,0 +1,2 @@
+# PHPStan规则例外
+packages/cms-template-bundle/src/Controller/RenderController.php:17:# Controller测试继承要求与技术约束冲突 - 参考Issue #858解决方案

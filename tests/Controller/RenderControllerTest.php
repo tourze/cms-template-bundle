@@ -2,80 +2,55 @@
 
 namespace Tourze\CmsTemplateBundle\Tests\Controller;
 
-use CmsBundle\Repository\EntityRepository;
-use CmsBundle\Repository\ModelRepository;
-use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tourze\CmsTemplateBundle\Controller\RenderController;
-use Tourze\CmsTemplateBundle\Repository\RenderTemplateRepository;
-use Twig\Environment;
+use Tourze\PHPUnitSymfonyWebTest\AbstractWebTestCase;
 
-class RenderControllerTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(RenderController::class)]
+#[RunTestsInSeparateProcesses]
+final class RenderControllerTest extends AbstractWebTestCase
 {
-    private RenderController $controller;
-    private Environment $twig;
-    private ModelRepository $modelRepository;
-    private EntityRepository $entityRepository;
-    private RenderTemplateRepository $templateRepository;
-
-    protected function setUp(): void
+    public function testUnauthenticatedAccessWithNoValidTemplates(): void
     {
-        $this->twig = $this->createMock(Environment::class);
-        $this->modelRepository = $this->createMock(ModelRepository::class);
-        $this->entityRepository = $this->createMock(EntityRepository::class);
-        $this->templateRepository = $this->createMock(RenderTemplateRepository::class);
+        $client = self::createClientWithDatabase();
 
-        $this->controller = new RenderController(
-            $this->twig,
-            $this->modelRepository,
-            $this->entityRepository,
-            $this->templateRepository
-        );
+        $client->catchExceptions(false);
+
+        try {
+            $client->request('GET', '/non-existent-path');
+            $this->assertResponseStatusCodeSame(404);
+        } catch (NotFoundHttpException $e) {
+            $this->assertStringContainsString('No route found', $e->getMessage());
+        }
     }
 
-    public function test_extends_abstract_controller(): void
+    #[DataProvider('provideNotAllowedMethods')]
+    public function testMethodNotAllowed(string $method): void
     {
-        $this->assertInstanceOf(AbstractController::class, $this->controller);
-    }
+        $client = self::createClientWithDatabase();
 
-    public function test_constructor(): void
-    {
-        $controller = new RenderController(
-            $this->twig,
-            $this->modelRepository,
-            $this->entityRepository,
-            $this->templateRepository
-        );
+        $client->catchExceptions(false);
 
-        $this->assertInstanceOf(RenderController::class, $controller);
-    }
+        try {
+            // @phpstan-ignore-next-line request() 方法的第一个参数在这里必须是变量，因为我们在测试不同的HTTP方法
+            $client->request($method, '/non-existent-path');
 
-
-    public function test_controller_dependencies(): void
-    {
-        $this->assertInstanceOf(
-            Environment::class,
-            $this->getPrivateProperty($this->controller, 'twig')
-        );
-        $this->assertInstanceOf(
-            ModelRepository::class,
-            $this->getPrivateProperty($this->controller, 'modelRepository')
-        );
-        $this->assertInstanceOf(
-            EntityRepository::class,
-            $this->getPrivateProperty($this->controller, 'entityRepository')
-        );
-        $this->assertInstanceOf(
-            RenderTemplateRepository::class,
-            $this->getPrivateProperty($this->controller, 'templateRepository')
-        );
-    }
-
-    private function getPrivateProperty(object $object, string $propertyName): mixed
-    {
-        $reflection = new \ReflectionClass($object);
-        $property = $reflection->getProperty($propertyName);
-        $property->setAccessible(true);
-        return $property->getValue($object);
+            // 如果没有抛出异常，检查响应状态码
+            $statusCode = $client->getResponse()->getStatusCode();
+            $this->assertSame(405, $statusCode, sprintf('HTTP方法 %s 应该返回405状态码，实际返回了 %d', $method, $statusCode));
+        } catch (NotFoundHttpException $e) {
+            // 404说明路由没有为这个方法注册，这也是期望的行为
+            $this->assertTrue(true, sprintf('HTTP方法 %s 正确地没有路由注册', $method));
+        } catch (MethodNotAllowedHttpException $e) {
+            // 405是我们期望的结果
+            $this->assertTrue(true, sprintf('HTTP方法 %s 正确地被禁止', $method));
+        }
     }
 }

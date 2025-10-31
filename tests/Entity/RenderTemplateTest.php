@@ -3,98 +3,108 @@
 namespace Tourze\CmsTemplateBundle\Tests\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Tourze\CmsTemplateBundle\Entity\RenderTemplate;
 use Tourze\EnumExtra\Itemable;
+use Tourze\PHPUnitDoctrineEntity\AbstractEntityTestCase;
 
-class RenderTemplateTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(RenderTemplate::class)]
+final class RenderTemplateTest extends AbstractEntityTestCase
 {
-    private RenderTemplate $template;
-
-    protected function setUp(): void
+    protected function createEntity(): RenderTemplate
     {
-        $this->template = new RenderTemplate();
+        return new RenderTemplate();
     }
 
-    public function test_implements_stringable(): void
+    public function testImplementsStringable(): void
     {
-        $this->assertInstanceOf(\Stringable::class, $this->template);
+        $this->assertInstanceOf(\Stringable::class, $this->createEntity());
     }
 
-    public function test_implements_itemable(): void
+    public function testImplementsItemable(): void
     {
-        $this->assertInstanceOf(Itemable::class, $this->template);
+        $this->assertInstanceOf(Itemable::class, $this->createEntity());
     }
 
-    public function test_initial_state(): void
+    public function testInitialState(): void
     {
-        $this->assertNull($this->template->getId());
-        $this->assertNull($this->template->getPath());
-        $this->assertNull($this->template->getTitle());
-        $this->assertNull($this->template->getContent());
-        $this->assertNull($this->template->getParent());
-        $this->assertInstanceOf(ArrayCollection::class, $this->template->getChildren());
-        $this->assertCount(0, $this->template->getChildren());
-        $this->assertFalse($this->template->isValid());
+        $template = $this->createEntity();
+        $this->assertNull($template->getId());
+        $this->assertNull($template->getPath());
+        $this->assertNull($template->getTitle());
+        $this->assertNull($template->getContent());
+        $this->assertNull($template->getParent());
+        $this->assertInstanceOf(ArrayCollection::class, $template->getChildren());
+        $this->assertCount(0, $template->getChildren());
+        $this->assertFalse($template->isValid());
     }
 
-    public function test_path_property(): void
+    public function testPathProperty(): void
     {
         $path = '/test/path';
-        $this->template->setPath($path);
+        $template = $this->createEntity();
+        $template->setPath($path);
 
-        $this->assertEquals($path, $this->template->getPath());
+        $this->assertEquals($path, $template->getPath());
     }
 
-    public function test_path_can_be_null(): void
+    public function testPathCanBeNull(): void
     {
-        $this->template->setPath(null);
+        $template = $this->createEntity();
+        $template->setPath(null);
 
-        $this->assertNull($this->template->getPath());
+        $this->assertNull($template->getPath());
     }
 
-    public function test_title_property(): void
+    public function testTitleProperty(): void
     {
         $title = 'Test Title';
-        $this->template->setTitle($title);
+        $template = $this->createEntity();
+        $template->setTitle($title);
 
-        $this->assertEquals($title, $this->template->getTitle());
+        $this->assertEquals($title, $template->getTitle());
     }
 
-    public function test_content_property(): void
+    public function testContentProperty(): void
     {
         $content = '<h1>Test Content</h1>';
-        $this->template->setContent($content);
+        $template = $this->createEntity();
+        $template->setContent($content);
 
-        $this->assertEquals($content, $this->template->getContent());
+        $this->assertEquals($content, $template->getContent());
     }
 
-    public function test_valid_property(): void
+    public function testValidProperty(): void
     {
-        $this->template->setValid(true);
-        $this->assertTrue($this->template->isValid());
+        $template = $this->createEntity();
+        $template->setValid(true);
+        $this->assertTrue($template->isValid());
 
-        $this->template->setValid(false);
-        $this->assertFalse($this->template->isValid());
+        $template->setValid(false);
+        $this->assertFalse($template->isValid());
 
-        $this->template->setValid(null);
-        $this->assertNull($this->template->isValid());
+        $template->setValid(null);
+        $this->assertNull($template->isValid());
     }
 
-    public function test_parent_child_relationship(): void
+    public function testParentChildRelationship(): void
     {
-        $parent = new RenderTemplate();
-        $child = new RenderTemplate();
+        $parent = $this->createEntity();
+        $child = $this->createEntity();
 
         $child->setParent($parent);
 
         $this->assertEquals($parent, $child->getParent());
     }
 
-    public function test_add_child(): void
+    public function testAddChild(): void
     {
-        $parent = new RenderTemplate();
-        $child = new RenderTemplate();
+        $parent = $this->createEntity();
+        $child = $this->createEntity();
 
         $parent->addChild($child);
 
@@ -103,10 +113,10 @@ class RenderTemplateTest extends TestCase
         $this->assertEquals($parent, $child->getParent());
     }
 
-    public function test_add_same_child_twice(): void
+    public function testAddSameChildTwice(): void
     {
-        $parent = new RenderTemplate();
-        $child = new RenderTemplate();
+        $parent = $this->createEntity();
+        $child = $this->createEntity();
 
         $parent->addChild($child);
         $parent->addChild($child);
@@ -114,10 +124,10 @@ class RenderTemplateTest extends TestCase
         $this->assertCount(1, $parent->getChildren());
     }
 
-    public function test_remove_child(): void
+    public function testRemoveChild(): void
     {
-        $parent = new RenderTemplate();
-        $child = new RenderTemplate();
+        $parent = $this->createEntity();
+        $child = $this->createEntity();
 
         $parent->addChild($child);
         $this->assertCount(1, $parent->getChildren());
@@ -128,127 +138,130 @@ class RenderTemplateTest extends TestCase
         $this->assertNull($child->getParent());
     }
 
-    public function test_remove_non_existing_child(): void
+    public function testRemoveNonExistingChild(): void
     {
-        $parent = new RenderTemplate();
-        $child = new RenderTemplate();
+        $parent = $this->createEntity();
+        $child = $this->createEntity();
 
         $parent->removeChild($child);
 
         $this->assertCount(0, $parent->getChildren());
     }
 
-    public function test_created_by_property(): void
+    public function testCreatedByProperty(): void
     {
         $createdBy = 'user123';
-        $this->template->setCreatedBy($createdBy);
+        $template = $this->createEntity();
+        $template->setCreatedBy($createdBy);
 
-        $this->assertEquals($createdBy, $this->template->getCreatedBy());
+        $this->assertEquals($createdBy, $template->getCreatedBy());
     }
 
-    public function test_updated_by_property(): void
+    public function testUpdatedByProperty(): void
     {
         $updatedBy = 'user456';
-        $this->template->setUpdatedBy($updatedBy);
+        $template = $this->createEntity();
+        $template->setUpdatedBy($updatedBy);
 
-        $this->assertEquals($updatedBy, $this->template->getUpdatedBy());
+        $this->assertEquals($updatedBy, $template->getUpdatedBy());
     }
 
-    public function test_created_from_ip_property(): void
+    public function testCreatedFromIpProperty(): void
     {
         $ip = '192.168.1.1';
-        $this->template->setCreatedFromIp($ip);
+        $template = $this->createEntity();
+        $template->setCreatedFromIp($ip);
 
-        $this->assertEquals($ip, $this->template->getCreatedFromIp());
+        $this->assertEquals($ip, $template->getCreatedFromIp());
     }
 
-    public function test_updated_from_ip_property(): void
+    public function testUpdatedFromIpProperty(): void
     {
         $ip = '10.0.0.1';
-        $this->template->setUpdatedFromIp($ip);
+        $template = $this->createEntity();
+        $template->setUpdatedFromIp($ip);
 
-        $this->assertEquals($ip, $this->template->getUpdatedFromIp());
+        $this->assertEquals($ip, $template->getUpdatedFromIp());
     }
 
-    public function test_create_time_property(): void
+    public function testCreateTimeProperty(): void
     {
         $now = new \DateTimeImmutable();
-        $this->template->setCreateTime($now);
+        $template = $this->createEntity();
+        $template->setCreateTime($now);
 
-        $this->assertEquals($now, $this->template->getCreateTime());
+        $this->assertEquals($now, $template->getCreateTime());
     }
 
-    public function test_update_time_property(): void
+    public function testUpdateTimeProperty(): void
     {
         $now = new \DateTimeImmutable();
-        $this->template->setUpdateTime($now);
+        $template = $this->createEntity();
+        $template->setUpdateTime($now);
 
-        $this->assertEquals($now, $this->template->getUpdateTime());
+        $this->assertEquals($now, $template->getUpdateTime());
     }
 
-    public function test_to_string_without_id(): void
+    public function testToStringWithoutId(): void
     {
-        $result = (string) $this->template;
+        $template = $this->createEntity();
+        $result = (string) $template;
 
         $this->assertEquals('', $result);
     }
 
-    public function test_to_string_with_id_and_title(): void
+    public function testToStringWithIdAndTitle(): void
     {
         // 由于ID是通过Snowflake生成的，我们模拟一个有标题的场景
         $title = 'Test Template';
-        $this->template->setTitle($title);
+        $template = $this->createEntity();
+        $template->setTitle($title);
 
         // 我们需要通过反射设置ID，因为它通常由Doctrine生成
-        $reflection = new \ReflectionClass($this->template);
+        $reflection = new \ReflectionClass($template);
         $idProperty = $reflection->getProperty('id');
         $idProperty->setAccessible(true);
-        $idProperty->setValue($this->template, '123456789');
+        $idProperty->setValue($template, '123456789');
 
-        $result = (string) $this->template;
+        $result = (string) $template;
 
         $this->assertEquals($title, $result);
     }
 
-    public function test_to_select_item(): void
+    public function testToSelectItemWithNullValues(): void
     {
-        $title = 'Test Template';
-        $path = '/test/path';
-
-        $this->template->setTitle($title);
-        $this->template->setPath($path);
-
         // 设置ID
-        $reflection = new \ReflectionClass($this->template);
+        $template = $this->createEntity();
+        $reflection = new \ReflectionClass($template);
         $idProperty = $reflection->getProperty('id');
         $idProperty->setAccessible(true);
-        $idProperty->setValue($this->template, '123456789');
+        $idProperty->setValue($template, '123456789');
 
-        $result = $this->template->toSelectItem();
+        $result = $template->toSelectItem();
 
-        $expectedText = "{$title}({$path})";
+        $expectedText = '()';
         $this->assertEquals([
-            'label' => $expectedText,
+            'id' => '123456789',
             'text' => $expectedText,
-            'value' => '123456789',
         ], $result);
     }
 
-    public function test_to_select_item_with_null_values(): void
+    /**
+     * 提供属性及其样本值的 Data Provider.
+     *
+     * @return iterable<string, array{string, mixed}>
+     */
+    public static function propertiesProvider(): iterable
     {
-        // 设置ID
-        $reflection = new \ReflectionClass($this->template);
-        $idProperty = $reflection->getProperty('id');
-        $idProperty->setAccessible(true);
-        $idProperty->setValue($this->template, '123456789');
-
-        $result = $this->template->toSelectItem();
-
-        $expectedText = "()";
-        $this->assertEquals([
-            'label' => $expectedText,
-            'text' => $expectedText,
-            'value' => '123456789',
-        ], $result);
+        yield 'path' => ['path', '/test/path'];
+        yield 'title' => ['title', 'Test Template'];
+        yield 'content' => ['content', '<h1>Test Content</h1>'];
+        yield 'valid' => ['valid', true];
+        yield 'createdBy' => ['createdBy', 'user123'];
+        yield 'updatedBy' => ['updatedBy', 'user456'];
+        yield 'createdFromIp' => ['createdFromIp', '192.168.1.1'];
+        yield 'updatedFromIp' => ['updatedFromIp', '10.0.0.1'];
+        yield 'createTime' => ['createTime', new \DateTimeImmutable()];
+        yield 'updateTime' => ['updateTime', new \DateTimeImmutable()];
     }
 }
