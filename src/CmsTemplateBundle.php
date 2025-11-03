@@ -8,6 +8,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Tourze\BundleDependency\BundleDependencyInterface;
 use Tourze\DoctrineSnowflakeBundle\DoctrineSnowflakeBundle;
+use Tourze\EasyAdminMenuBundle\EasyAdminMenuBundle;
 use Tourze\RoutingAutoLoaderBundle\RoutingAutoLoaderBundle;
 
 class CmsTemplateBundle extends Bundle implements BundleDependencyInterface
@@ -24,6 +25,7 @@ class CmsTemplateBundle extends Bundle implements BundleDependencyInterface
             CmsBundle::class => ['all' => true],
             DoctrineBundle::class => ['all' => true],
             RoutingAutoLoaderBundle::class => ['all' => true],
+            EasyAdminMenuBundle::class => ['all' => true],
         ];
     }
 }
