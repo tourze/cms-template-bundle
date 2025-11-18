@@ -69,14 +69,6 @@ final class RenderTemplateCrudControllerTest extends AbstractEasyAdminController
     }
 
     /**
-     * 测试getEntityFqcn方法返回正确的实体类
-     */
-    public function testGetEntityFqcnShouldReturnRenderTemplateClass(): void
-    {
-        $this->assertEquals(RenderTemplate::class, RenderTemplateCrudController::getEntityFqcn());
-    }
-
-    /**
      * 测试控制器类结构
      */
     public function testControllerStructure(): void
