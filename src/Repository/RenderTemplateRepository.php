@@ -13,7 +13,7 @@ use Tourze\PHPUnitSymfonyKernelTest\Attribute\AsRepository;
  */
 #[Autoconfigure(public: true)]
 #[AsRepository(entityClass: RenderTemplate::class)]
-class RenderTemplateRepository extends ServiceEntityRepository
+final class RenderTemplateRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

@@ -22,7 +22,7 @@ use Tourze\DoctrineHelper\CacheHelper;
  */
 #[AsRoutingConditionService(alias: 'cms_routing_condition')]
 #[WithMonologChannel(channel: 'cms_template')]
-class RoutingCondition implements RoutingConditionInterface
+final class RoutingCondition implements RoutingConditionInterface
 {
     final public const TEMPLATE_KEY = '_cmsRenderTemplateId';
 

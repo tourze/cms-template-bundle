@@ -2,8 +2,8 @@
 
 namespace Tourze\CmsTemplateBundle\Controller;
 
-use CmsBundle\Service\EntityService;
-use CmsBundle\Service\ModelService;
+use Tourze\CmsBundle\Service\EntityService;
+use Tourze\CmsBundle\Service\ModelService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

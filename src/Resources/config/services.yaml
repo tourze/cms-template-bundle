@@ -1,17 +1,16 @@
 services:
-  # default configuration for services in *this* file
   _defaults:
-    autowire: true      # Automatically injects dependencies in your services.
-    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+    autowire: true
+    autoconfigure: true
+    public: false
 
   Tourze\CmsTemplateBundle\Controller\:
     resource: '../../Controller/'
-  Tourze\CmsTemplateBundle\EventSubscriber\:
-    resource: '../../EventSubscriber/'
   Tourze\CmsTemplateBundle\Repository\:
     resource: '../../Repository/'
   Tourze\CmsTemplateBundle\Service\:
     resource: '../../Service/'
-  
-  Tourze\CmsTemplateBundle\Service\AdminMenu:
+    public: true
+  Tourze\CmsTemplateBundle\EventSubscriber\:
+    resource: '../../EventSubscriber/'
     public: true

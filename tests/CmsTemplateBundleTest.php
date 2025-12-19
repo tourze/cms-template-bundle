@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace CmsTemplateBundle\Tests;
+namespace Tourze\CmsTemplateBundle\Tests;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;

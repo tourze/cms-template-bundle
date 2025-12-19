@@ -13,7 +13,7 @@ use Tourze\CmsTemplateBundle\Entity\RenderTemplate;
 
 #[When(env: 'test')]
 #[When(env: 'dev')]
-class RenderTemplateFixtures extends Fixture
+final class RenderTemplateFixtures extends Fixture
 {
     public const RENDER_TEMPLATE_REFERENCE_PREFIX = 'render-template-';
 

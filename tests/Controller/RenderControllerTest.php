@@ -39,7 +39,6 @@ final class RenderControllerTest extends AbstractWebTestCase
         $client->catchExceptions(false);
 
         try {
-            // @phpstan-ignore-next-line request() 方法的第一个参数在这里必须是变量，因为我们在测试不同的HTTP方法
             $client->request($method, '/non-existent-path');
 
             // 如果没有抛出异常，检查响应状态码

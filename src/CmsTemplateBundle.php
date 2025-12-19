@@ -2,7 +2,7 @@
 
 namespace Tourze\CmsTemplateBundle;
 
-use CmsBundle\CmsBundle;
+use Tourze\CmsBundle\CmsBundle;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;

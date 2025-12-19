@@ -3,21 +3,23 @@
 namespace Tourze\CmsTemplateBundle\Tests\EventSubscriber;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Tourze\CmsTemplateBundle\Entity\RenderTemplate;
 use Tourze\CmsTemplateBundle\EventSubscriber\RenderTemplateListener;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractIntegrationTestCase;
 
 /**
  * @internal
  */
 #[CoversClass(RenderTemplateListener::class)]
-final class RenderTemplateListenerTest extends TestCase
+#[RunTestsInSeparateProcesses]
+final class RenderTemplateListenerTest extends AbstractIntegrationTestCase
 {
     private RenderTemplateListener $listener;
 
-    protected function setUp(): void
+    protected function onSetUp(): void
     {
-        $this->listener = new RenderTemplateListener();
+        $this->listener = self::getService(RenderTemplateListener::class);
     }
 
     public function testPrePersistAddsLeadingSlashWhenMissing(): void

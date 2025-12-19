@@ -1,7 +1,0 @@
-services:
-  Tourze\CmsTemplateBundle\Service\AdminMenu:
-    public: true
-    arguments:
-      - '@Tourze\EasyAdminMenuBundle\Service\LinkGeneratorInterface'
-    tags:
-      - { name: tourze.easy_admin.menu_provider }

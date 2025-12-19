@@ -7,7 +7,7 @@ use Tourze\CmsTemplateBundle\Entity\RenderTemplate;
 use Tourze\EasyAdminMenuBundle\Service\LinkGeneratorInterface;
 use Tourze\EasyAdminMenuBundle\Service\MenuProviderInterface;
 
-readonly class AdminMenu implements MenuProviderInterface
+readonly final class AdminMenu implements MenuProviderInterface
 {
     public function __construct(private LinkGeneratorInterface $linkGenerator)
     {

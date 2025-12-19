@@ -4,7 +4,6 @@ namespace Tourze\CmsTemplateBundle\Tests\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Tourze\CmsTemplateBundle\Entity\RenderTemplate;
 use Tourze\EnumExtra\Itemable;
 use Tourze\PHPUnitDoctrineEntity\AbstractEntityTestCase;

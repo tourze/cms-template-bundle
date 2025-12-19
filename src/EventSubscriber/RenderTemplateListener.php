@@ -8,7 +8,7 @@ use Tourze\CmsTemplateBundle\Entity\RenderTemplate;
 
 #[AsEntityListener(event: Events::prePersist, method: 'prePersist', entity: RenderTemplate::class)]
 #[AsEntityListener(event: Events::preUpdate, method: 'preUpdate', entity: RenderTemplate::class)]
-class RenderTemplateListener
+final class RenderTemplateListener
 {
     public function prePersist(RenderTemplate $object): void
     {
